@@ -42,8 +42,46 @@ sudo apt-get install -y php8.1 php8.1-cli php8.1-fpm php8.1-mysql php8.1-xml php
 
 # Install MySQL
 sudo apt-get install mysql-server -y
+
+# Start MySQL service
 sudo systemctl start mysql
 sudo systemctl enable mysql
+
+# Set root password and create dev user with password xxx
+# Using the MySQL root user to run SQL commands
+
+sudo mysql <<EOF
+-- Set root password to 'roxasshereDsdfkjasdf@@$12'
+ALTER USER 'root'@'localhost' IDENTIFIED BY 'roxasshereDsdfkjasdf@@$12';
+
+-- Create dev user and set password 'roxasshereDsdfkjasdf@@$12'
+CREATE USER 'dev'@'localhost' IDENTIFIED BY 'roxasshereDsdfkjasdf@@$12';
+
+-- Grant all privileges to dev user
+GRANT ALL PRIVILEGES ON *.* TO 'dev'@'localhost' WITH GRANT OPTION;
+
+-- Apply changes
+FLUSH PRIVILEGES;
+
+EOF
+
+# Secure MySQL Installation
+# Automatically secure MySQL installation with 'Y' responses
+sudo mysql_secure_installation <<EOF
+
+Y
+roxasshereDsdfkjasdf@@$12
+roxasshereDsdfkjasdf@@$12
+Y
+Y
+Y
+Y
+EOF
+
+# Restart MySQL service
+sudo systemctl restart mysql
+
+echo "MySQL installation and configuration completed."
 
 # Install MongoDB
 wget -qO - https://www.mongodb.org/static/pgp/server-6.0.asc | sudo apt-key add -
@@ -138,6 +176,12 @@ sudo apt install -y nodejs
 # Install 'n' globally to manage Node.js versions
 echo "Installing 'n' (Node.js version manager)..."
 sudo npm install -g n
+sudo npm install pnpm -g
+
+# Install pm2
+
+sudo npm install pm2 -g
+
 
 # Install the latest stable version of Node.js using 'n'
 echo "Installing the latest stable version of Node.js..."
